@@ -34,7 +34,7 @@ class StartScreen extends StatelessWidget {
               ));
             },
             child: const Text(
-              'Começar',
+              'Start',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 42,
