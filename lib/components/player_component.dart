@@ -2,7 +2,6 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
-import 'package:gameflamenew/components/enemey_component.dart';
 import 'package:gameflamenew/components/kunai_component.dart';
 import 'package:gameflamenew/game/main_game.dart';
 
@@ -21,6 +20,8 @@ class PlayerComponent extends SpriteAnimationComponent
   late SpriteSheet playerJumpSpriteSheet;
   late SpriteSheet playerAttack1SpriteSheet;
   late SpriteSheet playerAttack2SpriteSheet;
+  late SpriteSheet playerDeadSpriteSheet;
+  late SpriteSheet playerDefendSpriteSheet;
 
   late SpriteAnimation walkingAnimation =
       playerWalkingSpriteSheet.createAnimation(row: 0, stepTime: stepTime);
@@ -32,12 +33,21 @@ class PlayerComponent extends SpriteAnimationComponent
       playerAttack1SpriteSheet.createAnimation(row: 0, stepTime: stepTime);
   late SpriteAnimation attack2Animation =
       playerAttack2SpriteSheet.createAnimation(row: 0, stepTime: stepTime);
+  late SpriteAnimation deadAnimation = playerDeadSpriteSheet.createAnimation(
+      row: 0, stepTime: stepTime, loop: false);
+  late SpriteAnimation defendAnimation =
+      playerDefendSpriteSheet.createAnimation(row: 0, stepTime: stepTime);
+
   StatePlayer current = StatePlayer.idle;
+
   bool isFacingRight = true;
 
   int time = 0;
   bool canpress = true;
   bool kunaiPressed = false;
+
+  int lives = 3;
+  bool isAlive = true;
 
   @override
   Future<void> onLoad() async {
@@ -64,6 +74,14 @@ class PlayerComponent extends SpriteAnimationComponent
       image: await Flame.images.load("Ninja_Monk/Attack_2.png"),
       srcSize: playerDimensions,
     );
+    playerDeadSpriteSheet = SpriteSheet(
+      image: await Flame.images.load("Ninja_Monk/Dead.png"),
+      srcSize: playerDimensions,
+    );
+    playerDefendSpriteSheet = SpriteSheet(
+      image: await Flame.images.load("Ninja_Monk/Hurt.png"),
+      srcSize: playerDimensions,
+    );
     position = Vector2(gameRef.size.x / 2, gameRef.size.y - 100);
     size = Vector2.all(130);
     add(RectangleHitbox());
@@ -73,50 +91,38 @@ class PlayerComponent extends SpriteAnimationComponent
   @override
   void update(double dt) {
     super.update(dt);
-    if (canpress == false) {
-      disableKunai();
-    }
-    if (current == StatePlayer.attack1 || current == StatePlayer.attack2) {
-      if (animation!.isLastFrame == true) {
-        attack1Animation.reset();
-        attack2Animation.reset();
-        animation = idleAnimation;
-        current = StatePlayer.idle;
+    if (lives > 0) {
+      if (canpress == false) {
+        disableKunai();
+      }
+      if (current == StatePlayer.attack2 || current == StatePlayer.defend) {
+        if (animation!.isLastFrame == true) {
+          attack2Animation.reset();
+          defendAnimation.reset();
+          animation = idleAnimation;
+          current = StatePlayer.idle;
+        }
+      } else {
+        if (joystick.direction == JoystickDirection.idle) {
+          current = StatePlayer.idle;
+          animation = idleAnimation;
+        } else if (joystick.direction == JoystickDirection.left) {
+          if (isFacingRight) flipHorizontallyAroundCenter();
+          x -= 3;
+          current = StatePlayer.walk;
+          animation = walkingAnimation;
+          isFacingRight = false;
+        } else if (joystick.direction == JoystickDirection.right) {
+          if (!isFacingRight) flipHorizontallyAroundCenter();
+          x += 3;
+          current = StatePlayer.walk;
+          animation = walkingAnimation;
+          isFacingRight = true;
+        }
       }
     } else {
-      if (joystick.direction == JoystickDirection.idle) {
-        current = StatePlayer.idle;
-        animation = idleAnimation;
-      } else if (joystick.direction == JoystickDirection.left) {
-        if (isFacingRight) flipHorizontallyAroundCenter();
-        x -= 3;
-        current = StatePlayer.walk;
-        animation = walkingAnimation;
-        isFacingRight = false;
-      } else if (joystick.direction == JoystickDirection.right) {
-        if (!isFacingRight) flipHorizontallyAroundCenter();
-        x += 3;
-        current = StatePlayer.walk;
-        animation = walkingAnimation;
-        isFacingRight = true;
-      } else if (joystick.direction == JoystickDirection.up) {
-        // if (!isFacingRight) flipHorizontallyAroundCenter();
-        // y -= 3;
-        // current = StatePlayer.walk;
-        // animation = jumpAnimation;
-      }
-    }
-
-    bool movingLeft = joystick.relativeDelta[0] < 0;
-  }
-
-  @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    super.onCollision(intersectionPoints, other);
-
-    if (other is EnemeyComponent && animation == attack1Animation) {
-      other.removeFromParent();
-      gameRef.qtdEnemiesAlive--;
+      isAlive = false;
+      animation = deadAnimation;
     }
   }
 
@@ -128,9 +134,9 @@ class PlayerComponent extends SpriteAnimationComponent
     }
   }
 
-  void playerAttack1() {
-    animation = attack1Animation;
-    current = StatePlayer.attack1;
+  void playerDeffend() {
+    animation = defendAnimation;
+    current = StatePlayer.defend;
   }
 
   void playerAttack2() {

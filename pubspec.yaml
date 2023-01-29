@@ -66,15 +66,29 @@ flutter:
     - assets/images/Ninja_Monk/Idle.png
     - assets/images/Ninja_Monk/Jump.png
     - assets/images/Ninja_Monk/Run.png
+    - assets/images/Ninja_Monk/Dead.png
     - assets/images/Ninja_Monk/Attack_1.png
     - assets/images/Ninja_Monk/Attack_2.png
+    - assets/images/Ninja_Monk/Hurt.png
     - assets/images/Ninja_Monk/Kunai.png
     - assets/images/Ninja_Monk/joystick.png
+
+    - assets/images/Ninja_Peasant/Walk.png
+    - assets/images/Ninja_Peasant/Idle.png
+    - assets/images/Ninja_Peasant/Jump.png
+    - assets/images/Ninja_Peasant/Run.png
+    - assets/images/Ninja_Peasant/Hurt.png
+    - assets/images/Ninja_Peasant/Dead.png
+    - assets/images/Ninja_Peasant/Dart.png
+    - assets/images/Ninja_Peasant/Attack_1.png
+    - assets/images/Ninja_Peasant/Attack_2.png
 
     - assets/images/Kunoichi/Walk.png
     - assets/images/Kunoichi/Idle.png
     - assets/images/Kunoichi/Jump.png
     - assets/images/Kunoichi/Run.png
+    - assets/images/Kunoichi/Dead.png
+    - assets/images/Kunoichi/Attack_1.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,1 +1,1 @@
-enum StatePlayer { idle, walk, attack1, attack2 }
+enum StatePlayer { idle, walk, attack1, attack2, defend }
