@@ -4,16 +4,15 @@ import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gameflamenew/components/background_component.dart';
 import 'package:gameflamenew/components/player_component.dart';
-import 'package:gameflamenew/input/joystick.dart';
 
 import 'round_game.dart';
 
 class MainGame extends FlameGame
     with HasDraggables, HasTappables, HasCollisionDetection {
   late PlayerComponent player;
+  late JoystickComponent joystick;
   late RoundGame gameRounds;
   int round = 1;
   int qtdEnemies = 1;
@@ -24,9 +23,6 @@ class MainGame extends FlameGame
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-    ]);
     gameRounds = RoundGame();
     player = PlayerComponent();
     final image = await images.load('Ninja_Monk/joystick.png');
@@ -93,6 +89,21 @@ class MainGame extends FlameGame
       },
     );
 
+    joystick = JoystickComponent(
+      knob: CircleComponent(
+        radius: 15,
+        paint: BasicPalette.red.withAlpha(100).paint(),
+      ),
+      background: CircleComponent(
+        radius: 50,
+        paint: BasicPalette.red.withAlpha(50).paint(),
+      ),
+      margin: const EdgeInsets.only(
+        left: 20,
+        bottom: 20,
+      ),
+    );
+
     add(BackgroundComponent());
     add(joystick);
     add(shapeButton);
@@ -118,10 +129,12 @@ class MainGame extends FlameGame
             newRound();
           }
         } else {
-          restartGame();
+          overlays.add("victoryscreen");
         }
       }
-      if (!player.isAlive) {}
+      if (!player.isAlive) {
+        overlays.add("endscreen");
+      }
     }
   }
 

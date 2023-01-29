@@ -5,7 +5,6 @@ import 'package:flame/sprite.dart';
 import 'package:gameflamenew/components/kunai_component.dart';
 import 'package:gameflamenew/game/main_game.dart';
 
-import '../input/joystick.dart';
 import '../utils/states.dart';
 
 class PlayerComponent extends SpriteAnimationComponent
@@ -103,16 +102,16 @@ class PlayerComponent extends SpriteAnimationComponent
           current = StatePlayer.idle;
         }
       } else {
-        if (joystick.direction == JoystickDirection.idle) {
+        if (gameRef.joystick.direction == JoystickDirection.idle) {
           current = StatePlayer.idle;
           animation = idleAnimation;
-        } else if (joystick.direction == JoystickDirection.left) {
+        } else if (gameRef.joystick.direction == JoystickDirection.left) {
           if (isFacingRight) flipHorizontallyAroundCenter();
           x -= 3;
           current = StatePlayer.walk;
           animation = walkingAnimation;
           isFacingRight = false;
-        } else if (joystick.direction == JoystickDirection.right) {
+        } else if (gameRef.joystick.direction == JoystickDirection.right) {
           if (!isFacingRight) flipHorizontallyAroundCenter();
           x += 3;
           current = StatePlayer.walk;
