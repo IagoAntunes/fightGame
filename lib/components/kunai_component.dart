@@ -1,10 +1,13 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
 import 'package:gameflamenew/game/main_game.dart';
 
+import 'enemey_component.dart';
+
 class KunaiComponent extends SpriteAnimationComponent
-    with HasGameRef<MainGame> {
+    with HasGameRef<MainGame>, CollisionCallbacks {
   final Vector2 playerDimensions = Vector2.all(15);
   late SpriteSheet kunaiSpriteSheet;
   late SpriteAnimation kunaiAnimation =
@@ -19,6 +22,7 @@ class KunaiComponent extends SpriteAnimationComponent
       image: await Flame.images.load("Ninja_Monk/Kunai.png"),
       srcSize: playerDimensions,
     );
+    add(CircleHitbox());
     position = gameRef.player.position;
     animation = kunaiAnimation;
     size = Vector2.all(35);
@@ -35,6 +39,17 @@ class KunaiComponent extends SpriteAnimationComponent
       position.x += 2;
     } else {
       position.x -= 2;
+    }
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    super.onCollision(intersectionPoints, other);
+
+    if (other is EnemeyComponent) {
+      other.removeFromParent();
+      removeFromParent();
+      gameRef.qtdEnemiesAlive--;
     }
   }
 }

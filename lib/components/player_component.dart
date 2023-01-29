@@ -1,6 +1,8 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
+import 'package:gameflamenew/components/enemey_component.dart';
 import 'package:gameflamenew/components/kunai_component.dart';
 import 'package:gameflamenew/game/main_game.dart';
 
@@ -8,7 +10,7 @@ import '../input/joystick.dart';
 import '../utils/states.dart';
 
 class PlayerComponent extends SpriteAnimationComponent
-    with HasGameRef<MainGame> {
+    with HasGameRef<MainGame>, CollisionCallbacks {
   //Tamanho Sprite
   final Vector2 playerDimensions = Vector2.all(96);
   final double stepTime = 0.2;
@@ -63,7 +65,8 @@ class PlayerComponent extends SpriteAnimationComponent
       srcSize: playerDimensions,
     );
     position = Vector2(gameRef.size.x / 2, gameRef.size.y - 100);
-    size = Vector2.all(100);
+    size = Vector2.all(130);
+    add(RectangleHitbox());
     animation = idleAnimation;
   }
 
@@ -105,6 +108,16 @@ class PlayerComponent extends SpriteAnimationComponent
     }
 
     bool movingLeft = joystick.relativeDelta[0] < 0;
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    super.onCollision(intersectionPoints, other);
+
+    if (other is EnemeyComponent && animation == attack1Animation) {
+      other.removeFromParent();
+      gameRef.qtdEnemiesAlive--;
+    }
   }
 
   void disableKunai() {

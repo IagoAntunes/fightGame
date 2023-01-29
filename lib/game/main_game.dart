@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
@@ -10,9 +12,14 @@ import 'package:gameflamenew/components/enemey_component.dart';
 import 'package:gameflamenew/components/player_component.dart';
 import 'package:gameflamenew/input/joystick.dart';
 
-class MainGame extends FlameGame with HasDraggables, HasTappables {
+class MainGame extends FlameGame
+    with HasDraggables, HasTappables, HasCollisionDetection {
   PlayerComponent player = PlayerComponent();
-  EnemeyComponent enemy = EnemeyComponent();
+  int round = 1;
+  int qtdEnemies = 1;
+  late int qtdEnemiesAlive;
+
+  bool gameRunning = false;
 
   @override
   Future<void> onLoad() async {
@@ -88,12 +95,45 @@ class MainGame extends FlameGame with HasDraggables, HasTappables {
         player.playerAttack2();
       },
     );
+
     add(BackgroundComponent());
     add(joystick);
     add(shapeButton);
     add(shapeButton2);
     add(shapeButton3);
     add(player);
-    add(enemy);
+
+    qtdEnemiesAlive = qtdEnemies;
+  }
+
+  @override
+  void update(double dt) {
+    if (qtdEnemiesAlive == 0) {
+      newRound();
+    }
+
+    if (!gameRunning) {
+      addEnemies();
+      gameRunning = true;
+    }
+    super.update(dt);
+  }
+
+  void newRound() {
+    qtdEnemies = 1;
+    qtdEnemiesAlive = qtdEnemies;
+    addEnemies();
+  }
+
+  void addEnemies() {
+    int num = Random().nextInt(2);
+    add(
+      EnemeyComponent(
+        positionEnemy: num == 0
+            ? Vector2(-50, size.y - 175)
+            : Vector2(size.x + 60, size.y - 175),
+        isFaceRight: num == 0 ? true : false,
+      ),
+    );
   }
 }
