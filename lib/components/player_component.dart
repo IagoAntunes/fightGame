@@ -127,7 +127,7 @@ class PlayerComponent extends SpriteAnimationComponent
 
   void disableKunai() {
     time += 1;
-    if (time == 100) {
+    if (time == 50) {
       canpress = true;
       time = 0;
     }
