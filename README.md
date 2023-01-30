@@ -37,8 +37,9 @@
 
 ## 🎨 Layout
 
-The application layout is available in Figma:
-[LOADING]
+<a>
+  <img src="https://github.com/IagoAntunes/fightGame/blob/master/assets/github/video.gif" min-width="700px" max-width="700px" width="500px" alt="Gif do App">
+</a>
 
 
 ## 🛠 Technologies
