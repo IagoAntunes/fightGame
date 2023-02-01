@@ -19,7 +19,7 @@
 
 ## 💻 About the project
 
-:sun_behind_large_cloud: JobPortal  - Fighting game developed using flutter and Flame
+:fire: Fight  - Fighting game developed using flutter and Flame
 
 ---
 
